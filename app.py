@@ -51,20 +51,20 @@ def fetch_data(query):
 
 MONTHLY_CALLS_QUERY = """
 SELECT DATE_FORMAT(Data_Ocorrencia, '%Y-%m') AS mes, COUNT(ID_Ocorrencia) AS total_ocorrencias
-FROM ocorrencia
+FROM Ocorrencia
 GROUP BY mes
 ORDER BY mes;
 """
 
 STATUS_DISTRIBUTION_QUERY = """
 SELECT Status_Ocorrencia AS status, COUNT(ID_Ocorrencia) AS contagem
-FROM ocorrencia
+FROM Ocorrencia
 GROUP BY Status_Ocorrencia;
 """
 
 NATUREZA_DISTRIBUTION_QUERY = """
 SELECT Natureza_Ocorrencia AS natureza, COUNT(ID_Ocorrencia) AS contagem
-FROM ocorrencia
+FROM Ocorrencia
 GROUP BY Natureza_Ocorrencia
 ORDER BY contagem DESC
 LIMIT 10; -- Limita ao top 10 para melhor visualização
@@ -72,21 +72,23 @@ LIMIT 10; -- Limita ao top 10 para melhor visualização
 
 PRIORIDADE_DISTRIBUTION_QUERY = """
 SELECT Prioridade_Ocorrencia AS prioridade, COUNT(ID_Ocorrencia) AS contagem
-FROM ocorrencia
+FROM Ocorrencia
 GROUP BY Prioridade_Ocorrencia
 ORDER BY FIELD(Prioridade_Ocorrencia, 'Crítica', 'Alta', 'Média', 'Baixa');
 """
 
 LOCATION_REGRESSION_QUERY = """
 SELECT 
-    Latitude, 
-    Longitude, 
-    Localizacao,
-    Natureza_Ocorrencia 
+    E.Latitude, 
+    E.Longitude, 
+    CONCAT(E.Rua, ', ', E.Numero, ' - ', E.Cidade) AS Localizacao,
+    O.Natureza_Ocorrencia 
 FROM 
-    ocorrencia
+    Ocorrencia AS O
+JOIN 
+    Endereco AS E ON O.ID_Endereco = E.ID_Endereco
 WHERE 
-    Latitude IS NOT NULL AND Longitude IS NOT NULL;
+    E.Latitude IS NOT NULL AND E.Longitude IS NOT NULL;
 """
 
 # --- 3. INICIALIZAÇÃO E LAYOUT DO DASH ---
