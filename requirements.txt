@@ -6,3 +6,4 @@ python-dotenv
 dash
 plotly
 statsmodels
+gunicorn
